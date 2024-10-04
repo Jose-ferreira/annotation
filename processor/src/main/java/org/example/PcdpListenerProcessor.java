@@ -18,14 +18,26 @@ public class PcdpListenerProcessor extends AbstractProcessor {
     @Override
     public boolean process(Set<? extends TypeElement> annotations, RoundEnvironment roundEnv) {
 
-        for (Element element : roundEnv.getElementsAnnotatedWith(PcdpListener.class)) {
+        var tmp = roundEnv.getElementsAnnotatedWith(PcdpListener.class);
+        print(tmp);
 
-            String packageName = ((PackageElement)element.getEnclosingElement()).getQualifiedName().toString();
-            String context = element.getAnnotation(PcdpListener.class).context();
-            String className = element.getSimpleName().toString() + context + "Listener";
+        /*for (Element element : roundEnv.getElementsAnnotatedWith(PcdpListener.class)) {
+            print(element);
+            var tmp2 = element.getAnnotationsByType(PcdpListener.class).length;
+            print(tmp2);
+        }*/
 
-            generateClass(className, packageName);
-        }
+        //processPcdpListeners(roundEnv.getElementsAnnotatedWith(PcdpListeners.class));
+
+
+        print("single");
+        processPcdpListener(roundEnv.getElementsAnnotatedWith(PcdpListener.class));
+        print("Multiple");
+        processPcdpListeners(roundEnv.getElementsAnnotatedWith(PcdpListeners.class));
+
+        //processingEnv.getMessager().printMessage(Diagnostic.Kind.ERROR, "Jose");
+
+
         return false;
     }
 
@@ -37,6 +49,34 @@ public class PcdpListenerProcessor extends AbstractProcessor {
     @Override
     public SourceVersion getSupportedSourceVersion() {
         return SourceVersion.RELEASE_10;
+    }
+
+    private void processPcdpListeners(Set<? extends Element> pcdpListenersElements){
+        for (Element element : pcdpListenersElements) {
+
+            for (PcdpListeners pcdpListeners : element.getAnnotationsByType(PcdpListeners.class)) {
+                for (PcdpListener pcdpListener :pcdpListeners.value()) {
+
+                    String packageName = ((PackageElement)element.getEnclosingElement()).getQualifiedName().toString();
+                    String context = pcdpListener.context();
+                    String className = element.getSimpleName().toString() + context + "Listener";
+                    print(className);
+
+                    generateClass(className, packageName);
+                }
+            }
+        }
+    }
+
+    private void processPcdpListener(Set<? extends Element> pcdpListenerElements){
+        for (Element element : pcdpListenerElements) {
+
+            String packageName = ((PackageElement)element.getEnclosingElement()).getQualifiedName().toString();
+            String context = element.getAnnotation(PcdpListener.class).context();
+            String className = element.getSimpleName().toString() + context + "Listener";
+
+            generateClass(className, packageName);
+        }
     }
 
     private void generateClass(String className, String packageName){
@@ -57,5 +97,9 @@ public class PcdpListenerProcessor extends AbstractProcessor {
         } catch (IOException e) {
             processingEnv.getMessager().printMessage(Diagnostic.Kind.ERROR, e.toString());
         }
+    }
+
+    private void print(Object object){
+        processingEnv.getMessager().printMessage(Diagnostic.Kind.WARNING, String.valueOf(object));
     }
 }
