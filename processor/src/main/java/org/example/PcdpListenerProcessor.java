@@ -10,8 +10,8 @@ import javax.tools.Diagnostic;
 import javax.tools.JavaFileObject;
 import java.io.BufferedWriter;
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 public class PcdpListenerProcessor extends AbstractProcessor {
@@ -25,7 +25,7 @@ public class PcdpListenerProcessor extends AbstractProcessor {
 
     @Override
     public Set<String> getSupportedAnnotationTypes() {
-        return new HashSet<>(Arrays.asList("org.example.PcdpListener"));
+        return new HashSet<>(List.of("org.example.PcdpListener"));
     }
 
     @Override
@@ -55,8 +55,8 @@ public class PcdpListenerProcessor extends AbstractProcessor {
             try {
                 JavaFileObject generatedClass = processingEnv.getFiler().createSourceFile(className);
                 BufferedWriter bufferedWriter = new BufferedWriter(generatedClass.openWriter());
-                bufferedWriter.append("package " + packageName + ";\n");
-                bufferedWriter.append("public class " + className + "{\n");
+                bufferedWriter.append("package ").append(packageName).append(";\n");
+                bufferedWriter.append("public class ").append(className).append("{\n");
                 bufferedWriter.append("////TODO Flesh out listener\n");
                 bufferedWriter.append("}");
                 bufferedWriter.close();
