@@ -17,29 +17,14 @@ import java.util.Set;
 public class PcdpListenerProcessor extends AbstractProcessor {
     @Override
     public boolean process(Set<? extends TypeElement> annotations, RoundEnvironment roundEnv) {
-        for (Element element : roundEnv.getElementsAnnotatedWith(PcdpListener.class)) {
-            JavaFileObject generatedClass = null;
-            String packageName = ((PackageElement)element.getEnclosingElement()).getQualifiedName().toString();
-            BufferedWriter bufferedWriter = null;
-            String context = element.getAnnotation(PcdpListener.class).context();
-            try {
-                String className = element.getSimpleName().toString() + context + "Listener";
-                generatedClass = processingEnv.getFiler().createSourceFile(className);
-                bufferedWriter = new BufferedWriter(generatedClass.openWriter());
-                bufferedWriter.append("package " + packageName + ";");
-                bufferedWriter.newLine();
-                bufferedWriter.append("public class ");
-                bufferedWriter.append(className);
-                bufferedWriter.append("{");
-                bufferedWriter.newLine();
-                bufferedWriter.append("////TODO Flesh out litener");
-                bufferedWriter.newLine();
-                bufferedWriter.append("}");
-                bufferedWriter.close();
-            } catch (IOException e) {
-                processingEnv.getMessager().printMessage(Diagnostic.Kind.ERROR, e.toString());
-            }
 
+        for (Element element : roundEnv.getElementsAnnotatedWith(PcdpListener.class)) {
+
+            String packageName = ((PackageElement)element.getEnclosingElement()).getQualifiedName().toString();
+            String context = element.getAnnotation(PcdpListener.class).context();
+            String className = element.getSimpleName().toString() + context + "Listener";
+
+            generateClass(className, packageName);
         }
         return false;
     }
@@ -52,5 +37,25 @@ public class PcdpListenerProcessor extends AbstractProcessor {
     @Override
     public SourceVersion getSupportedSourceVersion() {
         return SourceVersion.RELEASE_10;
+    }
+
+    private void generateClass(String className, String packageName){
+
+        try {
+            JavaFileObject generatedClass = processingEnv.getFiler().createSourceFile(className);
+            BufferedWriter bufferedWriter = new BufferedWriter(generatedClass.openWriter());
+            bufferedWriter.append("package " + packageName + ";");
+            bufferedWriter.newLine();
+            bufferedWriter.append("public class ");
+            bufferedWriter.append(className);
+            bufferedWriter.append("{");
+            bufferedWriter.newLine();
+            bufferedWriter.append("////TODO Flesh out litener");
+            bufferedWriter.newLine();
+            bufferedWriter.append("}");
+            bufferedWriter.close();
+        } catch (IOException e) {
+            processingEnv.getMessager().printMessage(Diagnostic.Kind.ERROR, e.toString());
+        }
     }
 }
