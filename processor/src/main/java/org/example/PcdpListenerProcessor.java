@@ -25,7 +25,7 @@ public class PcdpListenerProcessor extends AbstractProcessor {
 
     @Override
     public Set<String> getSupportedAnnotationTypes() {
-        return new HashSet<>(List.of("org.example.PcdpListener"));
+        return new HashSet<>(List.of("org.example.PcdpListener","org.example.PcdpListeners"));
     }
 
     @Override
